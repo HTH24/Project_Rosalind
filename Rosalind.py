@@ -1,5 +1,6 @@
 import math
 import switch
+import numpy as np
 
 #
 # def f(a, b):
@@ -129,26 +130,68 @@ import switch
 # print(result)
 
 # 4. Rabbits and Recurrence Relations / Recursion. Fibonacci - Solved
-def Fibo(n, k):
+# def Fibo(n, k):
+#     """
+#     Positive integers n≤40 and k≤5.
+#     n is the No of month
+#     k is how many pairs of rabbits each pair can produce
+#     The total number of rabbit pairs that will be present after n months
+#     Every pair of reproduction-age rabbits produces a litter of k rabbit pairs
+#
+#     This problem can be solved by drawing out a tree of rabbit population
+#     """
+#     # base case
+#     if (n <= 2):
+#         return 1
+#     else:
+#         return k * Fibo(n - 2, k) + Fibo(n - 1, k)
+#
+# print(Fibo(5, 3)) # 19
+# print(Fibo(30, 4))
+
+# 5. Mortal Fibonacci Rabbits - Unsolved
+# def mortal_Fibo(n, m = 1):
+#     """
+#     Trial: 6, 3 => 4
+#     :param n: number of months. n <= 100
+#     :param m: months a rabbit lives. m <= 20
+#     each pair produces exactly 1 pair of rabbit
+#     :return: total number of rabbits after n months
+#
+#     keep track of the ages of rabbits
+#     """
+#     ages = [1] + [0] * (m - 1)
+#     for i in range(n - 1):
+#         ages = [sum(ages[1:])] + ages[:-1]
+#     return sum(ages)
+#
+# print(mortal_Fibo(96, 19))
+# print(mortal_Fibo(6, 3))
+
+# 6. Mendel's First Law
+def mendel_first(k, m, n):
     """
-    Positive integers n≤40 and k≤5.
-    n is the No of month
-    k is how many pairs of rabbits each pair can produce
-    The total number of rabbit pairs that will be present after n months
-    Every pair of reproduction-age rabbits produces a litter of k rabbit pairs
-
-    This problem can be solved by drawing out a tree of rabbit population
+    Three positive integers k, m, and n, representing a population containing k+m+n organisms:
+    k individuals are homozygous dominant (AA, BB) for a factor
+    m are heterozygous (Aa, Bb)
+    n are homozygous recessive (aa, bb)
+    :return: the probability that two randomly selected mating organisms will produce an individual
+    possessing a dominant allele (and thus displaying the dominant phenotype).
+    Assume that any two organisms can mate
     """
-    # base case
-    if (n <= 2):
-        return 1
-    else:
-        return k * Fibo(n - 2, k) + Fibo(n - 1, k)
+    # 1 - P(no dominant allele whatsoever). Latter = P1 no dominant allele * P2 no either
+    total = k + m + n
+    pn = n / total
+    pm = m / total
+    # combination of populations, two recessive population
+    twoRecess = pn * (n - 1) / (total - 1)
+    twoHetero = pm * (m - 1) / (total - 1)
+    heteroRecess = pn * (m / (total - 1)) + pm * (n / (total - 1))
 
-print(Fibo(5, 3)) # 19
-print(Fibo(30, 4))
+    recessProb = twoRecess + twoHetero * 1 /4 + heteroRecess * 1 / 2
+    return (1 - recessProb)
 
-
+print("{:.5f}".format(mendel_first(18, 21, 26)))
 
 
 
