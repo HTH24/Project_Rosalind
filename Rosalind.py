@@ -1,8 +1,10 @@
 import math
 import switch
 import numpy as np
+import regex as re
 
-#
+# Also includes code for Coursera MOOC: Bioinformatics for Beginners
+
 # def f(a, b):
 #     return ((a**2) + (b**2))
 #
@@ -168,31 +170,164 @@ import switch
 # print(mortal_Fibo(96, 19))
 # print(mortal_Fibo(6, 3))
 
-# 6. Mendel's First Law
-def mendel_first(k, m, n):
+# 6. Mendel's First Law - Solved
+# def mendel_first(k, m, n):
+#     """
+#     Three positive integers k, m, and n, representing a population containing k+m+n organisms:
+#     k individuals are homozygous dominant (AA, BB) for a factor
+#     m are heterozygous (Aa, Bb)
+#     n are homozygous recessive (aa, bb)
+#     :return: the probability that two randomly selected mating organisms will produce an individual
+#     possessing a dominant allele (and thus displaying the dominant phenotype).
+#     Assume that any two organisms can mate
+#     """
+#     # 1 - P(no dominant allele whatsoever). Latter = P1 no dominant allele * P2 no either
+#     total = k + m + n
+#     pn = n / total
+#     pm = m / total
+#     # combination of populations, two recessive population
+#     twoRecess = pn * (n - 1) / (total - 1)
+#     twoHetero = pm * (m - 1) / (total - 1)
+#     heteroRecess = pn * (m / (total - 1)) + pm * (n / (total - 1))
+#
+#     recessProb = twoRecess + twoHetero * 1 /4 + heteroRecess * 1 / 2
+#     return (1 - recessProb)
+#
+# print("{:.5f}".format(mendel_first(18, 21, 26)))
+
+# # 7. Counting Point Mutations - Solved
+# s = "AGCTAGACAGGACGCTACCTGCACGCCATGCCCCCGGTAGCTAGGCCCATCGGTACCATGCAAGACTCTCTCCCATGGCGCTCCGACGGTGCACAAGAATCAAGGGTGTCATTCCTTTAGGCTTAACGACGAACAGCTCAGATTACGTGTAACTGTGTCAGCTGGTTCTTTAGGTATATCCTAACCAAAGCGGATGCCATGAAGGACACAAGTGGGTTCGGTTTCCCCCCTGTTGGCACATTCTAAAGCGCTTCTATGCCGAGAGCTTTTTAGGACACTTCGTTAGGGAATTGGCGCTTATTGTGTGGCTTGCGAACGGCTCTGATGTCTGGCGGTGTACAATCATTACACAGATCTAACGAGTGTGTAAAAGTGATGTCAGGATCTCTATAATGCAGTCTGCCTTGGCCCATCGAACAGCTCGATCAAAGGGTTATCGTATACGACTGAAGGAGATCCTACCTTACCTCCTATGGAGTTTAGACCTGCCTCAATTTAGCCTAGAGGTGAGTGGCTGGTCCGTGCCAAATCGACAGAGTCATAACGGGGGATCTACCGCGAACAACGAGGCTGGCATTTTCGGTGCTGTAGGTCGTCGCATTTGCCTTCTGGAACGCGCCATTTCGTGACTATTTCATCGGCAACTAGAGCCTCTTGCGGTACCGGTACGGGACTGACCCCACCGTTGGAGTATACAGTGTCCACTCGGAAGCTACGTTTGTCGTGAGGCTTACAGCGGCACATACTACTCGACTAATGGCTCGGTGTGGAGACTGAGAGGACGAAATGGCCTGCGTACGGGCGCCAGTATAGTGTCGTCTTAGGCAGGTAGAAACTTGCCAGGGTAAATCTTTATCTTACATGTGACTATGTGTATAGGGTGAAGACAACCTCGGGGCCCCAACTTCGGGGCATACCTACAAGCCTTGGAAAATGAGTAAATAGAGACTCCATACCACCGGGCGGAGGGCCATATCCTGCCAC"
+# t = "CGCAGCGCAGCCGCATACCATGTCGCAGAGCCAACTCTTGGTACTCCCAGCGTAAACATTTACATATCTAGCGTATGAAGGGCCTACGGTGCCCATTCTTCAAGGTCGTCTTTCAGCTGAACCTCAATTCGTCCTGGTCAGGAACATGGCAACGGAGTCACTCGTTTCTTTATACATCTTCTAACCGTCGAGTGAAGCCTTAATGACCACAACGGGAGAGGCTTGACTAACTCCGGTACAGGCGCAATGCATCCTGACTTAAATACTCTGTCGTCGACGCCTATGAACACCTAGGGCTCAACCTGGGACGCGGGTACTGCAGTCTGGTTTCACCATATAGAATGATTAGTGCGTACTATCGAGTGTGTAAAAGTACTGCCGGCGGCGCGCTTTTGCAATTAGGCTCGTGGCATATAAACGCTCTAGCTATAGATTAGTATATGGAGCCGAAGCTGATCTGACTTTAAATCTTAGAGCACCGAGAATTGACAGCAACCAATCTCCAGGCACATGAATGACCTGTAACTAATCTAAACAGTCATGCGGCAAGTGACATTGCTAACAATCTGAGTGGCAGTATCGTTCCTGTAGGCTATTGTACGTGACCGCTGCATCTCGTCCCTACATTTCAACTATTATGGCAACGGCACCGTACGATGGCACTGAAAGGGGTCTGGTCATACCGGTCGGCACTAAAGTCCCGATGGATAGCGCCGGCTCGTCGTGAGGCTTTAACCCTCCCCAGTTTCTCTACGCTTGGCGACGTGAGGAAACTGAGGGGTACAAACCGCGTGTATACGGTCGCCCTGCCGGTGTCCATTACGGCCGTTGCTCGGTTTGCATGTCTCTTGCGTCATATACTATTCGCGACAGCTACTTGTTCTAGAGCATTTCGGGGCTGCACTCACCAGGCGTCTGTACCTGCGTGTTAAGTCCTTCCTAGCTGCGCTCGGCACAAATGGCCGAAGGGCGAGATTCTGCAAT"
+#
+# def count_point_mutations(s, t):
+#     count = 0
+#     l = len(s)
+#     for i in range(l):
+#         if s[i] != t[i]:
+#             count += 1
+#     return count
+#
+# print(count_point_mutations(s, t))
+
+# # 8. Calculating Expected Offspring - Solved
+# # toggle for each genotype pair, AA-AA, AA-Aa, etc.
+# toggles = [17628,16759,16979,19311,17759,19514]
+#
+# def calc_expected_offspring(toggles):
+#     """
+#     calculate expected number of offspring showing/carrying dominant phenotype
+#     Each pair of parent produces exactly two offsprings
+#     :return: number
+#     """
+#     total = 0
+#     # probability of getting A phenotype
+#     AAAA = 1
+#     AAAa = 1
+#     AAaa = 1
+#     AaAa = 0.75
+#     Aaaa = 0.5
+#     aaaa = 0
+#     genotypes = [AAAA, AAAa, AAaa, AaAa, Aaaa, aaaa]
+#     # total is an array. np. multiply performs element wise multiplication for two arrays
+#     total = np.multiply(toggles, genotypes) * 2 # two offsprings
+#     return sum(total)
+#
+# print(calc_expected_offspring(toggles))
+
+def FrequencyMap(Text, k):
+    freq = {}
+    n = len(Text)
+    # len text - len slide + 1 b/c of range
+    for i in range(n-k+1):
+        Pattern = Text[i:i+k]
+        freq[Pattern] = len(re.findall(Pattern, Text, overlapped=True))
+    return freq
+
+# s = "CGATATATCCATAG"
+# k = 3
+# print(FrequencyMap(s, k))
+
+def FrequentWords(Text, k):
+    words = []
+    freq = FrequencyMap(Text, k)
+    m = max(freq.values())
+    for key, value in freq.items():
+        if value == m:
+            words.append(key)
+    return words
+
+# s1 = "CGGAGGACTCTAGGTAACGCTTATCAGGTCCATAGGACATTCA"
+# k1 = 3
+# print(FrequentWords(s1, k1))
+
+def Reverse(Pattern):
     """
-    Three positive integers k, m, and n, representing a population containing k+m+n organisms:
-    k individuals are homozygous dominant (AA, BB) for a factor
-    m are heterozygous (Aa, Bb)
-    n are homozygous recessive (aa, bb)
-    :return: the probability that two randomly selected mating organisms will produce an individual
-    possessing a dominant allele (and thus displaying the dominant phenotype).
-    Assume that any two organisms can mate
+    :param Pattern: a string
+    :return: reversed string
     """
-    # 1 - P(no dominant allele whatsoever). Latter = P1 no dominant allele * P2 no either
-    total = k + m + n
-    pn = n / total
-    pm = m / total
-    # combination of populations, two recessive population
-    twoRecess = pn * (n - 1) / (total - 1)
-    twoHetero = pm * (m - 1) / (total - 1)
-    heteroRecess = pn * (m / (total - 1)) + pm * (n / (total - 1))
+    return "".join(reversed(Pattern))
 
-    recessProb = twoRecess + twoHetero * 1 /4 + heteroRecess * 1 / 2
-    return (1 - recessProb)
+# s2 = "AAAACCCGGT"
+# a = Reverse(s2)
+# print(a)
 
-print("{:.5f}".format(mendel_first(18, 21, 26)))
+def Complement(Pattern):
+    result = ""
+    compl = ""
+    for c in Pattern:
+        if c == "A":
+            compl = "T"
+        elif c == "T":
+            compl = "A"
+        elif c == "G":
+            compl = "C"
+        elif c == "C":
+            compl = "G"
+        result += compl
+    return result
 
+# print(Complement("AAAACCCGGT"))
 
+def PatternMatching(Pattern, Genome):
+    # output variable
+    """
+    :param Pattern: substring
+    :param Genome: longer string
+    :return: All starting positions in Genome where Pattern appears as a substring.
+    """
+    positions = []
+    k = len(Pattern)
+    # str.find returns the index of the first ocurrence of a substring in a string
+    # or -1 if not found
+    i = 0
+    if Pattern not in Genome:
+        return positions
+    else:
+        for i in re.finditer(Pattern, Genome, overlapped=True):
+            positions.append(i.start())
+    return positions
 
+# s3 = "CTTGATCAT"
+# g3 = "GATATATGCATATACTT"
+# print(PatternMatching(s3, g3))
+
+def PatternCount(Pattern, Genome):
+    """
+    :param Pattern: a substring pattern to look for in Text
+    :param Genome: Genome sequence, a string
+    :return: number of times Pattern occurs in Text
+    """
+    total = 0
+    l = []
+    for i in re.finditer(Pattern, Genome, overlapped=True):
+        l.append(i.start())
+    return len(l)
+
+s4 = "ATGATCAAG"
+s5 = "CTTGATCAT"
+g4 = "AACTCTATACCTCCTTTTTGTCGAATTTGTGTGATTTATAGAGAAAATCTTATTAACTGAAACTAAAATGGTAGGTTTGGTGGTAGGTTTTGTGTACATTTTGTAGTATCTGATTTTTAATTACATACCGTATATTGTATTAAATTGACGAACAATTGCATGGAATTGAATATATGCAAAACAAACCTACCACCAAACTCTGTATTGACCATTTTAGGACAACTTCAGGGTGGTAGGTTTCTGAAGCTCTCATCAATAGACTATTTTAGTCTTTACAAACAATATTACCGTTCAGATTCAAGATTCTACAACGCTGTTTTAATGGGCGTTGCAGAAAACTTACCACCTAAAATCCAGTATCCAAGCCGATTTCAGAGAAACCTACCACTTACCTACCACTTACCTACCACCCGGGTGGTAAGTTGCAGACATTATTAAAAACCTCATCAGAAGCTTGTTCAAAAATTTCAATACTCGAAACCTACCACCTGCGTCCCCTATTATTTACTACTACTAATAATAGCAGTATAATTGATCTGA"
+
+# print(PatternCount(s4, g4))
+# print(PatternCount(s5, g4))
+# print(PatternCount("AAA", "GACCATCAAAACTGATAAACTACTTAAAAATCAGT"))
 
